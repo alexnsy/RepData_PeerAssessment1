@@ -19,7 +19,7 @@ totalSteps <- tapply(activityData$steps, activityData$date, FUN=sum, na.rm=TRUE)
 qplot(totalSteps, binwidth=1000, xlab="Total Number of Steps / Day", main ="Histogram of Total Number of Steps per day", fill=I("blue"), col=I("grey"))
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+![](PA1_template_files/figure-html/Histogram Total Steps-1.png)<!-- -->
 
 ####Calculate the mean and median of total steps per day.
 
@@ -39,8 +39,8 @@ calculate(totalSteps)
 
 ###3. What is the average daily activity pattern?
 ####For the analysis in this section, NA entries are ignored and discarded.
-####The mean is calculated for each 5 minute interval is calculated across all days.
-####The mean for each 5 minute interval is then plotted to generate a daily activity pattern.
+####The mean is calculated for each 5 minute interval across all days.
+####The mean for each 5 minute interval is plotted to generate a daily activity pattern.
 
 ```r
 averagePat <- aggregate(x=list(steps=activityData$steps), by=list(interval=activityData$interval), mean, na.rm=TRUE)
@@ -48,11 +48,11 @@ averagePat <- aggregate(x=list(steps=activityData$steps), by=list(interval=activ
 ggplot(data=averagePat, aes(y=steps, x=interval)) +
         geom_line(color="blue") +
         xlab("5 Minute Intervals") +
-        ylab("Average Steps") +
+        ylab("Average Number of Steps") +
         ggtitle("Average Steps taken at 5 minute Intervals")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](PA1_template_files/figure-html/Activity Pattern-1.png)<!-- -->
 
 ####Which 5 minute interval, on average across all days in the dataset, contains the maximum number of steps?
 
@@ -67,7 +67,7 @@ averagePat[which.max(averagePat$steps),]
 
 
 ###4. Inputing Missing Values
-####Fill in the missing values (NA) in the dataset using the mean of steps taken per day.
+####Fill in the missing values (NA) in the dataset using the mean of steps taken for that particular 5 min interval.
 ####activityData2 will be the dataset with the missing values filled. 
 
 ```r
@@ -82,10 +82,10 @@ activityData2$steps[i] = averagePat[averagePat$interval == activityData2$interva
 
 ```r
 totalSteps2 <- tapply(activityData2$steps, activityData2$date, FUN=sum, na.rm=TRUE)
-qplot(totalSteps2, binwidth=1000, xlab="Total Number of Steps / Day", main ="Histogram of Total Number of Steps per day", fill=I("blue"), col=I("grey"))
+qplot(totalSteps2, binwidth=1000, xlab="Total Number of Steps / Day", main ="Histogram of Total Number of Steps per day (missing values filled)", fill=I("blue"), col=I("grey"))
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+![](PA1_template_files/figure-html/Missing Values Histogram-1.png)<!-- -->
 
 ####Calculate the mean and median of total steps per day.
 
@@ -97,6 +97,7 @@ calculate(totalSteps2)
 ##     MEAN   MEDIAN 
 ## 10766.19 10766.19
 ```
+####As expected, by filling in the missing/NA values generated a higher mean value.
 
 
 ###5. Differences in Activity Patterns between Weekdays and Weekends
@@ -117,10 +118,10 @@ averagePat2<- aggregate(activityData2$steps,
 names(averagePat2) <- c("interval","day_type","steps")
 
 xyplot(steps~interval | day_type, averagePat2, type="l",
-       layout=c(1,2), xlab="5 Minute Intervals", ylab = "Average Steps", main = "Daily Activity Comparison Weekend vs Weekday")
+       layout=c(1,2), xlab="5 Minute Intervals", ylab = "Average Number of Steps", main = "Daily Activity Comparison Weekend vs Weekday")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+![](PA1_template_files/figure-html/Activity Pattern Comparison-1.png)<!-- -->
 
 ####Calculate the mean and median for both for comparison.
 
@@ -137,6 +138,6 @@ tapply(averagePat2$steps,averagePat2$day_type, calculate)
 ##     MEAN   MEDIAN 
 ## 42.36640 32.33962
 ```
-
+####The comparison shows that more steps were taken during a weekend day compared to a week day.  
 
 
